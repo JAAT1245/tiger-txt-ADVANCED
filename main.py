@@ -50,7 +50,7 @@ async def account_login(bot: Client, m: Message):
             links = []
             for i in content:
                 links.append(i.split("://", 1))
-            os.remove(x)
+            os.remove(x)  # Delete the file after reading its contents
         except:
             await m.reply_text("Invalid file input.🥲😒🤦🏻")
             os.remove(x)
@@ -130,8 +130,6 @@ async def account_login(bot: Client, m: Message):
             V = links[i][1].replace("file/d/", "uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing", "")
             url = "https://" + V
 
-            # Add logic for specific URL types (visionias, classplusapp, etc.)
-
             # Clean filename for download
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -172,8 +170,12 @@ async def account_login(bot: Client, m: Message):
                 await prog.delete(True)
                 await send_vid(bot, m, cc, filename, thumb, name)
 
-                # Clean up the downloaded file to save storage
+                # Clean up the downloaded video file to save storage
                 os.remove(filename)
+
+                # Delete the thumbnail file if it was downloaded
+                if os.path.exists('thumb.jpg'):
+                    os.remove('thumb.jpg')
 
                 # Increase the count
                 count += 1
@@ -187,19 +189,37 @@ async def account_login(bot: Client, m: Message):
                         os.system(download_cmd)
                         copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.pdf', caption=cc1)
                         await copy.copy(chat_id=-1002374822952)
-                        count += 1
+
+                        # Clean up the downloaded PDF file to save storage
                         os.remove(f'{name}.pdf')
+
+                        count += 1
                     except FloodWait as e:
                         await m.reply_text(str(e))
                         time.sleep(e.x)
                         continue
                     except Exception as ex:
                         await m.reply_text(f"**This #Failed File is not Counted**\n**Skipping to next file.**")
-                    count += 1
-                    continue
+                        continue
+
     except Exception as ex:
         await m.reply_text(f"Error processing links: {ex}")
 
+    # Cleanup and final message
     await m.reply_text("**DONE BOSS 📚** 🎉")
+
+    # Clean up any temporary or unprocessed files (e.g., thumbnail, logs, etc.)
+    if os.path.exists('thumb.jpg'):
+        os.remove('thumb.jpg')
+
+    # Optionally, clear any other cache or temp files from yt-dlp
+    temp_cache_dir = './yt-dlp_cache'
+    if os.path.exists(temp_cache_dir):
+        for file in os.listdir(temp_cache_dir):
+            file_path = os.path.join(temp_cache_dir, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            else:
+                os.rmdir(file_path)  # Delete any empty directories
 
 bot.run()
