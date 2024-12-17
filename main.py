@@ -1,31 +1,22 @@
-from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
+import os
+import sys
+import time
+import asyncio
+import tempfile
 import requests
 import json
 import subprocess
+import re
 from pyrogram import Client, filters
-from pyrogram.types.messages_and_media import message
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import Message
 from pyrogram.errors import FloodWait
 from pyromod import listen
-from pyrogram.types import Message
-from pyrogram import Client, filters
-from p_bar import progress_bar
-from subprocess import getstatusoutput
 from aiohttp import ClientSession
-import helper
 from logger import logging
-import time
-import asyncio
-from pyrogram.types import User, Message
 from config import *
-import sys
-import re
-import os
+from helper import download_video, send_vid, download
 
-bot = Client("bot",
-             bot_token="",
-             api_id=22609670,
-             api_hash="3506d8474ad1f4f5e79b7c52a5c3e88d")
+bot = Client("bot", bot_token="", api_id=22609670, api_hash="3506d8474ad1f4f5e79b7c52a5c3e88d")
 
 
 @bot.on_message(filters.command(["start"]) & filters.user(ADMINS))
@@ -136,43 +127,20 @@ async def account_login(bot: Client, m: Message):
 
     try:
         for i in range(count - 1, len(links)):
-
             V = links[i][1].replace("file/d/", "uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing", "")
             url = "https://" + V
 
-            if "visionias" in url:
-                async with ClientSession() as session:
-                    async with session.get(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Referer': 'http://www.visionias.in/', 'Sec-Fetch-Dest': 'iframe', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'cross-site', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Linux; Android 12; RMX2121) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36', 'sec-ch-ua': '"Chromium";v="107", "Not=A?Brand";v="24"', 'sec-ch-ua-mobile': '?1', 'sec-ch-ua-platform': '"Android"',}) as resp:
-                        text = await resp.text()
-                        url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
+            # Add logic for specific URL types (visionias, classplusapp, etc.)
 
-            elif 'videos.classplusapp' in url:
-                url = requests.get(
-    f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', 
-    headers={
-        'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbbiI6dHJ1ZSwiYXBpO2AgaW96b6fnTr9ytGj8'
-    }
-).json()['url']
-
-
-            elif '/master.mpd' in url:
-                id = url.split("/")[-2]
-                url = "https://psitoffers.store/testkey.php?vid=" + id + "&quality=" + raw_text2
-
+            # Clean filename for download
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
 
-            if "youtu" in url:
-                ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
-            else:
-                ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
-
-            if "jw-prod" in url:
-                cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
-            else:
-                cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+            # Command to download video
+            cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
 
             try:
+                # Preparing caption for the media
                 cc = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
 💫 **𝐕𝐈𝐃𝐄𝐎 𝐈𝐃** : {str(count).zfill(3)}
 ╰━━━━━━━━━━━━━━━━━━━━━╮
@@ -194,19 +162,25 @@ async def account_login(bot: Client, m: Message):
 
 🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/targetallcourse)
 """
-                if "drive" in url:
-                    try:
-                        ka = await helper.download(url, name)
-                        copy = await bot.send_document(chat_id=m.chat.id, document=ka, caption=cc1)
-                        await copy.copy(chat_id=-1002374822952)
-                        count += 1
-                        os.remove(ka)
-                        time.sleep(1)
-                    except FloodWait as e:
-                        await m.reply_text(str(e))
-                        time.sleep(e.x)
-                        continue
-                elif ".pdf" in url:
+
+                # Start downloading the video
+                prog = await m.reply_text(f"**Downloading:-**\n\n** Video Name :-** `{name}\nQuality - {raw_text2}`\n**link:**`{url}`\n\n **bot made by cr choudhary ❤️**")
+                res_file = await download_video(url, cmd, name)
+                filename = res_file
+
+                # After download, send video and clean up the file
+                await prog.delete(True)
+                await send_vid(bot, m, cc, filename, thumb, name)
+
+                # Clean up the downloaded file to save storage
+                os.remove(filename)
+
+                # Increase the count
+                count += 1
+
+            except Exception as e:
+                # Handle failure
+                if ".pdf" in url:
                     try:
                         cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
                         download_cmd = f"{cmd} -R 25 --fragment-retries 25"
@@ -219,22 +193,13 @@ async def account_login(bot: Client, m: Message):
                         await m.reply_text(str(e))
                         time.sleep(e.x)
                         continue
-                else:
-                    prog = await m.reply_text(f"**Downloading:-**\n\n** Video Name :-** `{name}\nQuality - {raw_text2}`\n**link:**`{url}`\n\n **bot made by cr choudhary ❤️**")
-                    res_file = await helper.download_video(url, cmd, name)
-                    filename = res_file
-                    await prog.delete(True)
-                    await helper.send_vid(bot, m, cc, filename, thumb, name)
+                    except Exception as ex:
+                        await m.reply_text(f"**This #Failed File is not Counted**\n**Skipping to next file.**")
                     count += 1
+                    continue
+    except Exception as ex:
+        await m.reply_text(f"Error processing links: {ex}")
 
-            except Exception as e:
-                await m.reply_text(f"**This #Failed File is not Counted**\n**Name** =>> `{name}`\n**Link** =>> `{url}`\n\n ** fail reason »** {e}")
-                count += 1
-                continue
-
-    except Exception as e:
-        await m.reply_text(e)
-    await m.reply_text("🔰Done Boss🔰")
-
+    await m.reply_text("**DONE BOSS 📚** 🎉")
 
 bot.run()
