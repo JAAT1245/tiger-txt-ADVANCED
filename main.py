@@ -23,9 +23,9 @@ import re
 import os
 
 bot = Client("bot",
-             bot_token= "",
+             bot_token="",
              api_id=22609670,
-             api_hash= "3506d8474ad1f4f5e79b7c52a5c3e88d")
+             api_hash="3506d8474ad1f4f5e79b7c52a5c3e88d")
 
 
 @bot.on_message(filters.command(["start"]) & filters.user(ADMINS))
@@ -50,7 +50,6 @@ async def account_login(bot: Client, m: Message):
         file_name, ext = os.path.splitext(os.path.basename(x))
         credit = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
 
-
         path = f"./downloads/{m.chat.id}"
 
         try:
@@ -61,7 +60,6 @@ async def account_login(bot: Client, m: Message):
             for i in content:
                 links.append(i.split("://", 1))
             os.remove(x)
-            # print(len(links)
         except:
             await m.reply_text("Invalid file input.🥲😒🤦🏻")
             os.remove(x)
@@ -72,13 +70,13 @@ async def account_login(bot: Client, m: Message):
         links = []
         for i in content:
             links.append(i.split("://", 1))
-   
+
     await editable.edit(f"Total links found are **{len(links)}**\n\nSend From where you want to download initial is **1**")
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("**Enter Batch Name or send d for grabing from text filename.**")
+    await editable.edit("**Enter Batch Name or send d for grabbing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
@@ -103,12 +101,12 @@ async def account_login(bot: Client, m: Message):
         elif raw_text2 == "720":
             res = "1280x720"
         elif raw_text2 == "1080":
-            res = "1920x1080" 
-        else: 
+            res = "1920x1080"
+        else:
             res = "UN"
     except Exception:
-            res = "UN"
-    
+        res = "UN"
+
     await editable.edit("**Enter Your Name or send `de` for use default**")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
@@ -139,7 +137,7 @@ async def account_login(bot: Client, m: Message):
     try:
         for i in range(count - 1, len(links)):
 
-            V = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","") # .replace("mpd","m3u8")
+            V = links[i][1].replace("file/d/", "uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing", "")
             url = "https://" + V
 
             if "visionias" in url:
@@ -149,11 +147,12 @@ async def account_login(bot: Client, m: Message):
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
 
             elif 'videos.classplusapp' in url:
-             url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0'}).json()['url']
+                url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvb
+alIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0'}).json()['url']
 
             elif '/master.mpd' in url:
-             id =  url.split("/")[-2]
-             url =  "https://psitoffers.store/testkey.php?vid=" + id + "&quality=" + raw_text2
+                id = url.split("/")[-2]
+                url = "https://psitoffers.store/testkey.php?vid=" + id + "&quality=" + raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -169,7 +168,7 @@ async def account_login(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
-               cc = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
+                cc = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
 💫 **𝐕𝐈𝐃𝐄𝐎 𝐈𝐃** : {str(count).zfill(3)}
 ╰━━━━━━━━━━━━━━━━━━━━━╮
 📁 **𝐓𝐈𝐓𝐋𝐄** : {name1} ({res})
@@ -180,7 +179,7 @@ async def account_login(bot: Client, m: Message):
 🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/TARGETALLCOURSE)
 """
 
-              cc1 = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
+                cc1 = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
 💫 **𝐏𝐃𝐅 𝐈𝐃** : {str(count).zfill(3)}
 ╰━━━━━━━━━━━━━━━━━━━━━╮
 📁 **𝐓𝐈𝐓𝐋𝐄** : {name1}
@@ -190,12 +189,12 @@ async def account_login(bot: Client, m: Message):
 
 🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/targetallcourse)
 """
-    if "drive" in url:
+                if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
-                        copy = await bot.send_document(chat_id=m.chat.id,document=ka, caption=cc1)
-                        await copy.copy(chat_id = -1002374822952)
-                        count+=1
+                        copy = await bot.send_document(chat_id=m.chat.id, document=ka, caption=cc1)
+                        await copy.copy(chat_id=-1002374822952)
+                        count += 1
                         os.remove(ka)
                         time.sleep(1)
                     except FloodWait as e:
@@ -207,8 +206,8 @@ async def account_login(bot: Client, m: Message):
                         cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
                         download_cmd = f"{cmd} -R 25 --fragment-retries 25"
                         os.system(download_cmd)
-                        copy = await bot.send_document(chat_id=m.chat.id,document=f'{name}.pdf', caption=cc1)
-                        await copy.copy(chat_id = -1002374822952)
+                        copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.pdf', caption=cc1)
+                        await copy.copy(chat_id=-1002374822952)
                         count += 1
                         os.remove(f'{name}.pdf')
                     except FloodWait as e:
