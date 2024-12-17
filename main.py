@@ -41,7 +41,7 @@ async def restart_handler(_, m):
 
 @bot.on_message(filters.command(["BOSS"]) & filters.user(ADMINS))
 async def account_login(bot: Client, m: Message):
-    editable = await m.reply_text(f"**Hey [{m.from_user.first_name}](tg://user?id={m.from_user.id})\nSend txt file**")
+    editable = await m.reply_text(f"**Hey [{m.from_user.first_name}](tg://user?id={m.from_user.id})\nSend txt 🗃️ file**")
     input: Message = await bot.listen(editable.chat.id)
     if input.document:
         x = await input.download()
@@ -63,7 +63,7 @@ async def account_login(bot: Client, m: Message):
             os.remove(x)
             # print(len(links)
         except:
-            await m.reply_text("Invalid file input.🥲")
+            await m.reply_text("Invalid file input.🥲😒🤦🏻")
             os.remove(x)
             return
     else:
@@ -171,24 +171,24 @@ async def account_login(bot: Client, m: Message):
             try:
                cc = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
 💫 **𝐕𝐈𝐃𝐄𝐎 𝐈𝐃** : {str(count).zfill(3)}
-╰━━━━━━━━━━━━━━━━━━━━━╯
+╰━━━━━━━━━━━━━━━━━━━━━╮
 📁 **𝐓𝐈𝐓𝐋𝐄** : {name1} ({res})
 
 📚 **𝐂𝐎𝐔𝐑𝐒𝐄** : {b_name}  
 📥 **𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐃 𝐁𝐘** : {CR}
 
-🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐘 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/YourChannelName)
+🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/TARGETALLCOURSE)
 """
 
               cc1 = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
 💫 **𝐏𝐃𝐅 𝐈𝐃** : {str(count).zfill(3)}
-╰━━━━━━━━━━━━━━━━━━━━━╯
+╰━━━━━━━━━━━━━━━━━━━━━╮
 📁 **𝐓𝐈𝐓𝐋𝐄** : {name1}
 
 📚 **𝐂𝐎𝐔𝐑𝐒𝐄** : {b_name}  
 📥 **𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐃 𝐁𝐘** : {CR}
 
-🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐘 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/YourChannelName)
+🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/targetallcourse)
 """
     if "drive" in url:
                     try:
