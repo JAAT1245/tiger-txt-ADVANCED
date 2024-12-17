@@ -168,10 +168,29 @@ async def account_login(bot: Client, m: Message):
             else:
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
-            try:                               
-                cc = f'** {str(count).zfill(3)}.** {name1} ({res}) CR CHOUDHARY.mkv\n**Batch Name :** {b_name}\n\n**Downloaded by : {CR}**'
-                cc1 = f'** {str(count).zfill(3)}.** {name1} CR CHOUDHARY.pdf \n**Batch Name :**{b_name}\n\n**Downloaded by : {CR}**'
-                if "drive" in url:
+            try:
+               cc = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
+💫 **𝐕𝐈𝐃𝐄𝐎 𝐈𝐃** : {str(count).zfill(3)}
+╰━━━━━━━━━━━━━━━━━━━━━╯
+📁 **𝐓𝐈𝐓𝐋𝐄** : {name1} ({res})
+
+📚 **𝐂𝐎𝐔𝐑𝐒𝐄** : {b_name}  
+📥 **𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐃 𝐁𝐘** : {CR}
+
+🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐘 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/YourChannelName)
+"""
+
+              cc1 = f"""╭━━━━━━━━━━━━━━━━━━━━━╮
+💫 **𝐏𝐃𝐅 𝐈𝐃** : {str(count).zfill(3)}
+╰━━━━━━━━━━━━━━━━━━━━━╯
+📁 **𝐓𝐈𝐓𝐋𝐄** : {name1}
+
+📚 **𝐂𝐎𝐔𝐑𝐒𝐄** : {b_name}  
+📥 **𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐃 𝐁𝐘** : {CR}
+
+🔗 [**𝐉𝐎𝐈𝐍 𝐌𝐘 𝐂𝐇𝐀𝐍𝐍𝐄𝐋**](https://t.me/YourChannelName)
+"""
+    if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
                         copy = await bot.send_document(chat_id=m.chat.id,document=ka, caption=cc1)
